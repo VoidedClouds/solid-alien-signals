@@ -1,0 +1,42 @@
+{
+  "name": "solid-alien-signals",
+  "version": "0.1.0",
+  "license": "MIT",
+  "description": "SolidJS style wrapper on alien-signals.",
+  "types": "./types/index.d.ts",
+  "main": "./dist/index.js",
+  "module": "./dist/index.module.js",
+  "exports": {
+    ".": {
+      "types": "./types/index.d.ts",
+      "import": "./dist/index.module.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "scripts": {
+    "build": "npm run build:js && npm run types",
+    "build:js": "rimraf dist && tsup",
+    "test": "vitest run --coverage tests",
+    "tsc": "tsc --noEmit -p tsconfig.build.json",
+    "types": "rimraf types && tsc -p tsconfig.build.json"
+  },
+  "devDependencies": {
+    "@types/node": "^22.15.23",
+    "@vitest/coverage-v8": "^3.1.4",
+    "jest-extended": "latest",
+    "rimraf": "^6.0.1",
+    "tsup": "^8.5.0",
+    "typescript": "latest",
+    "vitest": "latest"
+  },
+  "dependencies": {
+    "alien-signals": "^2.0.5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/VoidedClouds/solid-alien-signals.git"
+  },
+  "bugs": {
+    "url": "https://github.com/VoidedClouds/solid-alien-signals/issues"
+  }
+}
