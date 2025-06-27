@@ -1,9 +1,9 @@
 # solid-alien-signals
 
-A [SolidJS](https://github.com/solidjs/solid)-like API for [alien-signals](https://github.com/johnsoncodehk/alien-signals), providing familiar primitives such as `batch`, `createEffect`, `createMemo`, `createResource`, `createSignal`, and `untrack`.
+A [SolidJS](https://github.com/solidjs/solid)-like API for [alien-signals](https://github.com/stackblitz/alien-signals), providing familiar primitives such as `batch`, `createEffect`, `createMemo`, `createResource`, `createSignal`, and `untrack`.
 
 > **Note:**  
-> Some methods in this package are direct aliases for primitives from [`alien-signals`](https://github.com/johnsoncodehk/alien-signals) (such as `createEffect` and `createMemo`). Others, like `batch`, `createResource`, `createSignal`, and `untrack`, are wrappers or adapted implementations to provide a SolidJS-compatible API and behavior.
+> Some methods in this package are direct aliases for primitives from [`alien-signals`](https://github.com/stackblitz/alien-signals) (such as `createEffect` and `createMemo`). Others, like `batch`, `createResource`, `createSignal`, and `untrack`, are wrappers or adapted implementations to provide a SolidJS-compatible API and behavior.
 
 ## Features
 
