@@ -20,6 +20,20 @@ export function untrack<T>(fn: () => T): T {
   }
 }
 
+const asValue = (value, currentValue?) => (typeof value === 'function' ? value(currentValue) : value);
+
+const SIGNAL_SYMBOL = Symbol();
+// Source for names: https://github.com/stackblitz/alien-signals/issues/71#issuecomment-2993030132
+const SIGNAL_NAMES = { 'bound signalOper': 1, 'bound computedOper': 1 };
+
+export function isEffect(fn: Function | object): boolean {
+  return fn ? (fn as Function).name === 'bound effectOper' : false;
+}
+
+export function isSignal(fn: Function | object): boolean {
+  return fn ? SIGNAL_NAMES[(fn as Function).name] === 1 || fn[SIGNAL_SYMBOL] === true : false;
+}
+
 /**
  * MIT License
  *
@@ -48,9 +62,7 @@ export function untrack<T>(fn: () => T): T {
 
 //#region SolidJS/solid - solid/src/reactive/signal.ts
 export type Accessor<T> = () => T;
-
-export type Setter<T> = (value: T) => T;
-
+export type Setter<T> = (value: T | ((prev: T) => T)) => T;
 export type Signal<T> = [get: Accessor<T>, set: Setter<T>];
 
 export function createSignal<T>(): Signal<T | undefined>;
@@ -58,10 +70,19 @@ export function createSignal<T>(value: T): Signal<T>;
 export function createSignal<T>(value?: T): Signal<T | undefined> {
   const internalSignal = signal(value);
   const getter: Accessor<T | undefined> = () => internalSignal();
-  const setter: Setter<T | undefined> = (value: T | undefined) => {
-    internalSignal(value);
+  const setter: Setter<T | undefined> = (value: T | undefined | ((prev: T | undefined) => T | undefined)) => {
+    internalSignal(
+      asValue(
+        value,
+        untrack(() => internalSignal())
+      )
+    );
     return untrack(() => internalSignal());
   };
+
+  // Add signal markers
+  (getter as any)[SIGNAL_SYMBOL] = true;
+  (setter as any)[SIGNAL_SYMBOL] = true;
 
   return [getter, setter];
 }
@@ -298,9 +319,10 @@ export function createResource<T, S = true, R = unknown>(
     }
   });
 
+  const refetch = (info) => load(info);
   const actions: ResourceActions<T | undefined, R> = {
     mutate: setData,
-    refetch: (info) => load(info)
+    refetch
   };
 
   if (dynamic) {
@@ -310,6 +332,9 @@ export function createResource<T, S = true, R = unknown>(
   } else {
     load(false);
   }
+
+  // Add Signal Symbol
+  (read as any)[SIGNAL_SYMBOL] = true;
 
   return [read as Resource<T>, actions];
 }
