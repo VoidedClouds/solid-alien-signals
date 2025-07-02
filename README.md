@@ -9,6 +9,7 @@ A [SolidJS](https://github.com/solidjs/solid)-like API for [alien-signals](https
 
 - **SolidJS-compatible API:** Use `batch`, `createEffect`, `createMemo`, `createResource`, `createSignal`, and `untrack`, similar to SolidJS.
 - **Resource primitives:** Use `createResource` for async data flows.
+- **Type guards:** Use `isSignal` and `isEffect` to identify reactive primitives.
 - **TypeScript support:** Fully typed API.
 
 ## Installation
@@ -34,6 +35,9 @@ createEffect(() => {
 
 setCount(2); // Console: Count is 2
 console.log(double()); // 4
+
+// Setters also accept functions for updates based on previous value
+setCount(prev => prev + 1); // count is now 3
 ```
 
 ### Batching Updates
@@ -83,6 +87,22 @@ const value = untrack(() => count());
 // `value` is read without tracking as a dependency
 ```
 
+### Type Guards
+
+Check if a value is a signal or effect:
+
+```ts
+import { createSignal, createEffect, isSignal, isEffect } from 'solid-alien-signals';
+
+const [count, setCount] = createSignal(0);
+const effectFn = createEffect(() => console.log(count()));
+
+console.log(isSignal(count)); // true
+console.log(isSignal(setCount)); // true
+console.log(isEffect(effectFn)); // true
+console.log(isSignal(() => {})); // false
+```
+
 ## API Reference
 
 ### `batch(fn: () => void): void`
@@ -101,13 +121,21 @@ Creates a memoized computation.
 
 Manages async data with loading/error states.
 
-### `createSignal<T>(initialValue?: T): [() => T, (v: T) => T]`
+### `createSignal<T>(initialValue?: T): [() => T, (v: T | ((prev: T) => T)) => T]`
 
-Creates a reactive signal.
+Creates a reactive signal. The setter accepts either a value or a function that receives the previous value.
 
 ### `untrack<T>(fn: () => T): T`
 
 Runs a function without tracking dependencies.
+
+### `isSignal(value: any): boolean`
+
+Returns `true` if the value is a signal (including signal getters, setters, memos, and resources).
+
+### `isEffect(value: any): boolean`
+
+Returns `true` if the value is an effect function.
 
 ## License
 
