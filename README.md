@@ -37,7 +37,7 @@ setCount(2); // Console: Count is 2
 console.log(double()); // 4
 
 // Setters also accept functions for updates based on previous value
-setCount(prev => prev + 1); // count is now 3
+setCount((prev) => prev + 1); // count is now 3
 ```
 
 ### Batching Updates
@@ -116,6 +116,10 @@ Runs a function whenever its dependencies change.
 ### `createMemo<T>(fn: () => T): () => T`
 
 Creates a memoized computation.
+
+### `createRenderEffect(fn: () => void): void`
+
+Runs a function whenever its dependencies change.
 
 ### `createResource<T, S, R>(source, fetcher, options?): [Resource<T>, ResourceActions<T, R>]`
 

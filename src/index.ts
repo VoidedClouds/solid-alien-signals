@@ -1,6 +1,14 @@
-import { computed as createMemo, effect as createEffect, endBatch, setCurrentSub, signal, startBatch } from 'alien-signals';
+import {
+  computed as createMemo,
+  effect as createEffect,
+  effect as createRenderEffect,
+  endBatch,
+  setCurrentSub,
+  signal,
+  startBatch
+} from 'alien-signals';
 export * from 'alien-signals';
-export { createEffect, createMemo };
+export { createEffect, createRenderEffect, createMemo };
 
 export function batch(fnToBatch: () => void) {
   startBatch();
@@ -23,15 +31,15 @@ export function untrack<T>(fn: () => T): T {
 const asValue = (value, currentValue?) => (typeof value === 'function' ? value(currentValue) : value);
 
 const SIGNAL_SYMBOL = Symbol();
-// Source for names: https://github.com/stackblitz/alien-signals/issues/71#issuecomment-2993030132
-const SIGNAL_NAMES = { 'bound signalOper': 1, 'bound computedOper': 1 };
+// Source for Signal names: https://github.com/stackblitz/alien-signals/issues/71#issuecomment-2993030132
+const SIGNAL_NAMES = { 'bound signalOper': true, 'bound computedOper': true };
 
 export function isEffect(fn: Function | object): boolean {
   return fn ? (fn as Function).name === 'bound effectOper' : false;
 }
 
 export function isSignal(fn: Function | object): boolean {
-  return fn ? SIGNAL_NAMES[(fn as Function).name] === 1 || fn[SIGNAL_SYMBOL] === true : false;
+  return fn ? SIGNAL_NAMES[(fn as Function).name] || fn[SIGNAL_SYMBOL] === true : false;
 }
 
 /**
