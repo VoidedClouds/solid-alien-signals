@@ -1,6 +1,6 @@
 {
   "name": "solid-alien-signals",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "license": "MIT",
   "description": "SolidJS style wrapper on alien-signals.",
   "files": [
